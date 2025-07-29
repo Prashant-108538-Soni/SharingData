@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+
+class EventBillTile extends StatelessWidget {
+  /// Main event name/title (e.g., "Mom's Phone Bill")
+  final String eventName;
+
+  /// Icon representing the event (e.g., phone bill icon) — SVG or normal widget
+  final Widget eventTypeIcon;
+
+  /// Account or bill-related information (e.g., phone number)
+  final String accountDetails;
+
+  /// Bill type (e.g., Phone Bill, Electricity, etc.)
+  final String billType;
+
+  const EventBillTile({
+    super.key,
+    required this.eventName,
+    required this.eventTypeIcon,
+    required this.accountDetails,
+    required this.billType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Responsiveness logic
+    double iconSize;
+    double circleRadius;
+    double titleFont;
+    double subtitleFont;
+    double spacing;
+
+    if (screenWidth >= 1000) {
+      // Web
+      iconSize = 32;
+      circleRadius = 36;
+      titleFont = 22;
+      subtitleFont = 18;
+      spacing = 16;
+    } else if (screenWidth >= 600) {
+      // Tablet
+      iconSize = 28;
+      circleRadius = 32;
+      titleFont = 20;
+      subtitleFont = 16;
+      spacing = 14;
+    } else {
+      // Mobile
+      iconSize = 24;
+      circleRadius = 28;
+      titleFont = 18;
+      subtitleFont = 14;
+      spacing = 12;
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Icon with circular background
+        Container(
+          width: circleRadius * 2,
+          height: circleRadius * 2,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.red.shade100,
+          ),
+          alignment: Alignment.center,
+          child: SizedBox(
+            width: iconSize,
+            height: iconSize,
+            child: eventTypeIcon,
+          ),
+        ),
+        SizedBox(width: spacing),
+        // Text info section
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title text
+            Text(
+              eventName,
+              style: TextStyle(
+                fontSize: titleFont,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 4),
+            // Account number | Bill Type
+            Row(
+              children: [
+                Text(
+                  accountDetails,
+                  style: TextStyle(
+                    fontSize: subtitleFont,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '|',
+                  style: TextStyle(
+                    fontSize: subtitleFont,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  billType,
+                  style: TextStyle(
+                    fontSize: subtitleFont,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+              ],
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
