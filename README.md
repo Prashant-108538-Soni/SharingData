@@ -186,3 +186,11 @@ class BillCard extends StatelessWidget {
     );
   }
 }
+
+
+Behind the Scenes and Ahead: Quarterly All Hands- Q1 2025
+Wednesday, Jul 30  •  4:00 – 5:00 PM
+Google Meet joining info
+Video call link: https://meet.google.com/bud-ptcx-qbm
+Or dial: +1 929-282-2119 PIN: 889 345 651#
+More phone numbers: https://tel.meet/bud-ptcx-qbm?pin=5286788557322
