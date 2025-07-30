@@ -1,69 +1,52 @@
-Row(
+import 'package:flutter/material.dart';
+
+/// A reusable widget that displays a status icon and accompanying text.
+/// 
+/// This widget is useful for showing status messages like "SmartPay Set"
+/// with an icon (e.g., checkmark) and text aligned horizontally.
+class StatusIndicator extends StatelessWidget {
+  /// The icon to be displayed on the left (e.g., a checkmark).
+  final Icon icon;
+
+  /// The text to be displayed next to the icon.
+  final String text;
+
+  /// Creates a [StatusIndicator] widget.
+  ///
+  /// [icon] and [text] are required.
+  const StatusIndicator({
+    Key? key,
+    required this.icon,
+    required this.text,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Icon with circular background
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(shape: BoxShape.circle, color: backgroundColor),
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: 24,
-              height: 24,
-              child: SvgPicture.asset(
-                svgPath,
-                // Add placeholderBuilder for error handling
-                placeholderBuilder: (BuildContext context) =>
-                    const Icon(Icons.error_outline, color: Colors.red),
-              ),
-            ),
+        // Icon shown inside a circle
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.green, width: 2),
           ),
+          padding: const EdgeInsets.all(4),
+          child: icon,
         ),
-        Flexible(child: const SizedBox(width: 12)),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title text
-              Flexible(
-                child: Text(
-                  eventName,
-                  style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
-                  overflow: TextOverflow.ellipsis, // Optional: Add ellipsis for long event names
-                  maxLines: 1, // Optional: Limit the event name to a single line
-                ),
-              ),
-              const SizedBox(height: 4),
-              // Account number | Bill Type
-              Flexible(
-                child: Row(
-                  children: [
-                    Expanded(
-                      // Make the accountDetails Text widget flexible
-                      child: Text(
-                        accountDetails,
-                        style: TextStyle(color: Colors.grey.shade800),
-                        overflow: TextOverflow.ellipsis, // Add ellipsis for long account details
-                        maxLines: 1, // Limit to a single line
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    if (billType.isNotEmpty) Text('|', style: TextStyle(color: Colors.grey.shade800)),
-                    const SizedBox(width: 6),
-                    // Wrap billType with Expanded if it could also overflow
-                    Expanded(
-                      child: Text(
-                        billType,
-                        style: TextStyle(color: Colors.grey.shade800),
-                        overflow: TextOverflow.ellipsis, // Add ellipsis for long bill types
-                        maxLines: 1, // Limit to a single line
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+        const SizedBox(width: 8),
+
+        // Text shown next to the icon
+        Text(
+          text,
+          style: const TextStyle(
+            color: Colors.green,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
+  }
+}
