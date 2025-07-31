@@ -2,31 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hdfc_flutter_widgets/event_card/common/description.dart';
 
-/// A reusable widget that displays a primary detail row consisting of:
-/// - A leading SVG icon inside a colored circular background
-/// - A title (main label)
-/// - A short description
-/// - A smart pay status widget that shows a status with an icon and text
+/// Displays the primary detail row for an event or bill.
 ///
-/// This widget is designed to be used in event or transaction cards
-/// where a quick summary of an item needs to be shown in a structured layout.
+/// Includes:
+/// - A leading circular icon (SVG)
+/// - Title (e.g., "Mom's Phone Bill")
+/// - Subtitle (e.g., masked account or plan)
+/// - Description widget (icon + text)
 class PrimaryDetail extends StatelessWidget {
-  /// Path to the leading SVG asset (e.g., "assets/icons/phone_bill.svg")
+  /// Path to the SVG icon shown at the start.
   final String prefixIconPath;
 
-  /// Background color of the circular container that wraps the icon
+  /// Background color for the circular icon container.
   final Color prefixIconBackgroundColor;
 
-  /// The main title or event name to be shown (e.g., "Mom's Phone Bill")
+  /// Main title text.
   final String title;
 
-  /// The subtitle or additional supporting text (currently unused in the UI)
+  /// Supporting subtitle text (e.g., account details).
   final String subtitle;
 
-  /// Description text shown below the title
+  /// Text shown in the status row.
   final String descriptionText;
 
-  /// Path to the SVG asset used inside SmartPayStatus widget
+  /// Path to the SVG icon used in the status row.
   final String descriptionIconPath;
 
   const PrimaryDetail({
@@ -44,18 +43,20 @@ class PrimaryDetail extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Leading circular icon
+        // Leading icon inside colored circle
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(shape: BoxShape.circle, color: prefixIconBackgroundColor),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: prefixIconBackgroundColor,
+          ),
           alignment: Alignment.center,
           child: SizedBox(
             width: 24,
             height: 24,
             child: SvgPicture.asset(
               prefixIconPath,
-              // Fallback icon if asset fails to load
-              placeholderBuilder: (BuildContext context) =>
+              placeholderBuilder: (_) =>
                   const Icon(Icons.error_outline, color: Colors.red),
             ),
           ),
@@ -63,33 +64,37 @@ class PrimaryDetail extends StatelessWidget {
 
         const SizedBox(width: 12),
 
-        // Title, description, and status section
+        // Text section
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title text
+              // Title
               Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
-                // overflow: TextOverflow.ellipsis,
-                // maxLines: 2,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
               ),
 
               const SizedBox(height: 4),
 
-              // Description text
+              // Subtitle
               Text(
                 subtitle,
-                style: TextStyle(color: Colors.grey.shade800),
-                // overflow: TextOverflow.ellipsis,
-                // maxLines: 2,
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                ),
               ),
 
               const SizedBox(height: 20),
 
-              // Status row (icon + label)
-              Description(svgPath: descriptionIconPath, text: descriptionText),
+              // Status (icon + label)
+              Description(
+                svgPath: descriptionIconPath,
+                text: descriptionText,
+              ),
             ],
           ),
         ),
