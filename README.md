@@ -1,61 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-/// A compact widget that displays an icon alongside a status label.
-///
-/// Commonly used for showing small inline status indicators like
-/// "SmartPay Set" or "AutoPay Enabled" with an SVG icon.
-///
-/// The icon is rendered inside a bordered circular container.
-class Description extends StatelessWidget {
-  /// Path to the SVG asset to be displayed.
+/// A reusable widget that displays an SVG icon inside a rounded card.
+/// Shows an error fallback if the SVG fails to load.
+class BillerImage extends StatelessWidget {
+  /// Path to the SVG asset.
   final String svgPath;
 
-  /// Text displayed next to the icon.
-  final String text;
+  /// Optional size of the card. Defaults to 60x60.
+  final double size;
 
-  const Description({
+  const BillerImage({
     super.key,
     required this.svgPath,
-    required this.text,
+    this.size = 60,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Circular bordered icon
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.green, width: 2),
-          ),
-          padding: const EdgeInsets.all(4),
-          child: SizedBox(
-            width: 10,
-            height: 10,
-            child: SvgPicture.asset(
-              svgPath,
-              placeholderBuilder: (_) =>
-                  const Icon(Icons.error_outline, color: Colors.red),
-            ),
-          ),
+    return Container(
+      width: size,
+      height: size,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).primaryColor,
+          width: 1,
         ),
-        const SizedBox(width: 8),
-
-        // Status text
-        Flexible(
-          child: Text(
-            text,
-            style: const TextStyle(
-              color: Colors.green,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
+      ),
+      child: SvgPicture.asset(
+        svgPath,
+        fit: BoxFit.contain,
+        // Add placeholderBuilder for error handling
+        placeholderBuilder: (BuildContext context) =>
+        const Icon(Icons.error_outline, color: Colors.red),
+      ),
     );
   }
 }
