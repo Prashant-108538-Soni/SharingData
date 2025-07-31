@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-/// A customizable tertiary button widget that presents a dropdown menu of options.
-/// This widget provides a button with a border that, when tapped, reveals a
-/// popup menu. The menu items are dynamically generated from a list of strings
-/// and a callback function handles the selection of an item.
-/// It uses the application's primary color for the border.
-/// The button takes a list of [options] (strings), a callback [onSelect]
-/// for when an option is chosen, and a [icon] widget to display as the button itself.
-
+/// A customizable menu button with a dropdown of selectable options.
+/// 
+/// Displays a bordered button containing an SVG icon, which opens a popup menu
+/// on tap. Menu items are passed as a list of strings, and the selected item
+/// is returned via the [onSelect] callback.
 class MenuButton extends StatelessWidget {
-  /// The list of strings to be displayed as menu options.
+  /// List of menu option labels.
   final List<String> options;
 
-  /// The callback function executed when a menu option is selected.
-  /// It receives the selected string as an argument.
+  /// Callback triggered with the selected option.
   final ValueChanged<String> onSelect;
 
-  /// The widget displayed as the button that triggers the popup menu.
+  /// Path to the SVG icon used in the button.
   final String iconPath;
 
-  /// Creates a tertiary button with a dropdown menu.
   const MenuButton({
     super.key,
     required this.options,
@@ -37,27 +32,21 @@ class MenuButton extends StatelessWidget {
       ),
       child: PopupMenuButton<String>(
         onSelected: onSelect,
-        itemBuilder: (BuildContext context) {
-          return options
-              .map(
-                (String choice) =>
-                    PopupMenuItem<String>(value: choice, child: Text(choice)),
-              )
-              .toList();
-        },
+        itemBuilder: (BuildContext context) => options
+            .map((choice) => PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                ))
+            .toList(),
         icon: SvgPicture.asset(
           iconPath,
-          // Fallback icon if asset fails to load
-          placeholderBuilder: (BuildContext context) =>
-          const Icon(Icons.error_outline, color: Colors.red),
+          placeholderBuilder: (_) =>
+              const Icon(Icons.error_outline, color: Colors.red),
         ),
-        color: Colors.white, // Explicitly set popup menu background color
+        color: Colors.white,
         padding: EdgeInsets.zero,
-        // Adjust the offset to position the dropdown below the button
-        offset: Offset(0, 42),
+        offset: const Offset(0, 42), // Position dropdown below the button
       ),
     );
   }
 }
-
-
