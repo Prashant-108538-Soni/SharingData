@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
-/// A customizable secondary button widget following the application's theme.
-/// This widget provides a reusable button component with a distinct outlined
-/// style. It automatically adapts to the current theme's primary color
-/// for its border and text, ensuring a consistent look and feel throughout the application.
-/// The button takes a [title] string for its text label and an [onTap] callback
-/// function to define its behavior when pressed.
+/// A reusable secondary button with an outlined style.
+///
+/// Typically used for medium-emphasis actions.  
+/// Styled with the app’s `colorScheme.primary` for border and text color.
 class SecondaryButton extends StatelessWidget {
-  /// The text displayed on the button.
+  /// Text label displayed inside the button.
   final String title;
 
-  /// The callback function that is executed when the button is pressed.
+  /// Callback executed when the button is pressed.
   final VoidCallback onTap;
 
-  /// Creates a primary button widget.
-  const SecondaryButton({super.key, required this.title, required this.onTap});
+  const SecondaryButton({
+    super.key,
+    required this.title,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
