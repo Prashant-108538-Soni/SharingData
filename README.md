@@ -6,53 +6,71 @@ import 'package:hdfc_flutter_widgets/event_card/common/logo.dart';
 import 'package:hdfc_flutter_widgets/event_card/common/smart_info_card.dart';
 import 'package:hdfc_flutter_widgets/event_card/common/primary_detail.dart';
 
+/// Model representing an action for the event card.
 class EventCardActionItem {
+  /// Action label text.
   final String title;
+
+  /// Callback triggered on tap.
   final VoidCallback onTap;
+
+  /// Marks the action as primary (used for button rendering logic).
   final bool isPrimary;
 
-  EventCardActionItem({required this.title, required this.onTap, this.isPrimary = true});
+  EventCardActionItem({
+    required this.title,
+    required this.onTap,
+    this.isPrimary = true,
+  });
 }
 
-/// A reusable and responsive compact event card widget.
-/// Use this to show payment/event-related information in a summarized format.
+/// A reusable UI widget to present event or billing information in a compact, styled card.
+///
+/// Typically used in dashboards or transaction summaries. It shows:
+/// - A header with title, subtitle, icon, and biller logo
+/// - Billing/payment details
+/// - Action buttons for user interaction
 class CompactEventCard extends StatelessWidget {
+  /// List of actions to display (at least one for primary, others as menu options).
   final List<EventCardActionItem> actionItems;
 
-  /// Path to the event icon (usually an SVG).
+  /// SVG path of the event icon (left side).
   final String prefixIconPath;
 
-  /// Background color for event icon.
+  /// Background color behind the event icon.
   final Color prefixIconColor;
 
-  /// Path to the biller logo/icon.
+  /// SVG path of the biller logo (right side).
   final String suffixIconPath;
 
-  /// Event name to display.
+  /// Main title or event label.
   final String title;
 
+  /// Optional subtitle under the title.
   final String subTitle;
 
-  /// Label text for smart pay status (e.g. "Enabled", "Disabled").
+  /// Smart pay status text (e.g., "Enabled", "Disabled").
   final String descriptionText;
 
-  /// Icon path for smart pay status.
+  /// SVG icon for smart pay status.
   final String descriptionIconPath;
 
-  /// Total amount to be paid/shown.
+  /// Displayed amount (e.g., ₹ 599.00).
   final double amount;
 
-  /// Status string for the bill (e.g. "Paid", "Overdue").
+  /// Payment status label (e.g., "Paid", "Overdue").
   final String paymentStatus;
 
-  /// Bill status text background color.
+  /// Background color of the payment status label.
   final Color paymentStatusBackgroundColor;
 
-  /// Bill status text color.
+  /// Text/border color of the payment status label.
   final Color paymentStatusTextColor;
 
+  /// A label string with event date and status (e.g., "12 Jan • Scheduled").
   final String eventDateWithLabel;
 
+  /// SVG path for the menu icon (usually kebab or three dots).
   final String menuButtonIconPath;
 
   const CompactEventCard({
@@ -73,84 +91,83 @@ class CompactEventCard extends StatelessWidget {
     required this.menuButtonIconPath,
   });
 
-  /// Top container decoration
+  /// Decoration for the top section (header)
   BoxDecoration _topContainerDecoration(BuildContext context) => BoxDecoration(
-    color: Colors.lightBlue[50],
-    border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
-    borderRadius: const BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    ),
-  );
+        color: Colors.lightBlue[50],
+        border: Border.all(color: Theme.of(context).primaryColor),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      );
 
-  /// Bottom container decoration
+  /// Decoration for the bottom section (details + actions)
   BoxDecoration _bottomContainerDecoration(BuildContext context) => BoxDecoration(
-    color: Colors.white,
-    borderRadius: const BorderRadius.only(
-      bottomLeft: Radius.circular(8),
-      bottomRight: Radius.circular(8),
-    ),
-    border: Border(
-      left: BorderSide(color: Theme.of(context).primaryColor, width: 1),
-      right: BorderSide(color: Theme.of(context).primaryColor, width: 1),
-      bottom: BorderSide(color: Theme.of(context).primaryColor, width: 1),
-    ),
-  );
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(8),
+          bottomRight: Radius.circular(8),
+        ),
+        border: Border.all(color: Theme.of(context).primaryColor),
+      );
 
   @override
   Widget build(BuildContext context) {
+    // Extract primary and secondary actions
     final EventCardActionItem? primaryAction = actionItems.isNotEmpty ? actionItems.first : null;
-    final List<EventCardActionItem> secondaryAction = actionItems.length > 1
-        ? actionItems.sublist(1)
-        : [];
+    final List<EventCardActionItem> secondaryActions =
+        actionItems.length > 1 ? actionItems.sublist(1) : [];
 
     return LayoutBuilder(
       builder: (context, constraints) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top section: Event details and smart pay
+            // Top section: Icon + Title + Subtitle + Status + Logo
             Container(
               decoration: _topContainerDecoration(context),
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Left: Primary detail (icon, title, subtitle, status)
                   Expanded(
                     child: PrimaryDetail(
                       title: title,
+                      subtitle: subTitle,
                       prefixIconPath: prefixIconPath,
                       prefixIconBackgroundColor: prefixIconColor,
-                      descriptionIconPath: descriptionIconPath,
                       descriptionText: descriptionText,
-                      subtitle: subTitle,
+                      descriptionIconPath: descriptionIconPath,
                     ),
                   ),
+                  // Right: Biller logo
                   Logo(svgPath: suffixIconPath, size: 50),
                 ],
               ),
             ),
 
-            // Bottom section: Payment info + actions
+            // Bottom section: Amount, status, pill, buttons
             Container(
               decoration: _bottomContainerDecoration(context),
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
               child: Column(
                 children: [
-                  // Amount + Bill status + Date pill
+                  // Row 1: Amount + Payment Status + Date Label
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // Left: Amount + Status
                       Expanded(
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Flexible(
                               child: Text(
                                 '₹ ${amount.toStringAsFixed(2)}',
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                // overflow: TextOverflow.ellipsis,
-                                // maxLines: 2,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -164,16 +181,16 @@ class CompactEventCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(width: 2),
+                      const SizedBox(width: 2),
+                      // Right: Pill label with date/status
                       Flexible(child: SmartInfoCard(text: eventDateWithLabel)),
                     ],
                   ),
                   const SizedBox(height: 10),
 
-                  // Bottom actions
+                  // Row 2: Primary & Secondary Actions
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (primaryAction != null)
                         Expanded(
@@ -182,19 +199,17 @@ class CompactEventCard extends StatelessWidget {
                             onTap: primaryAction.onTap,
                           ),
                         ),
-
                       const SizedBox(width: 10),
-
-                      if (secondaryAction.isNotEmpty)
+                      if (secondaryActions.isNotEmpty)
                         MenuButton(
-                          options: secondaryAction.map((e) => e.title.toString()).toList(),
+                          iconPath: menuButtonIconPath,
+                          options: secondaryActions.map((e) => e.title).toList(),
                           onSelect: (selectedTitle) {
-                            final EventCardActionItem selected = secondaryAction.firstWhere(
-                              (element) => element.title == selectedTitle,
+                            final selected = secondaryActions.firstWhere(
+                              (item) => item.title == selectedTitle,
                             );
                             selected.onTap();
                           },
-                          iconPath: menuButtonIconPath,
                         ),
                     ],
                   ),
