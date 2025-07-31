@@ -1,52 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
-/// A customizable menu button with a dropdown of selectable options.
-/// 
-/// Displays a bordered button containing an SVG icon, which opens a popup menu
-/// on tap. Menu items are passed as a list of strings, and the selected item
-/// is returned via the [onSelect] callback.
-class MenuButton extends StatelessWidget {
-  /// List of menu option labels.
-  final List<String> options;
+/// A customizable primary button widget following the application's theme.
+/// This widget provides a reusable button component with a distinct primary
+/// style. It automatically adapts to the current theme's primary color
+/// and text color, ensuring a consistent look and feel throughout the application.
+/// The button takes a [title] string for its text label and an [onTap] callback
+/// function to define its behavior when pressed.
+/// An optional [icon] widget can be provided to display an icon before the title.
+class PrimaryButton extends StatelessWidget {
+  /// The text displayed on the button.
+  final String title;
 
-  /// Callback triggered with the selected option.
-  final ValueChanged<String> onSelect;
+  /// The callback function that is executed when the button is pressed.
+  final VoidCallback onTap;
 
-  /// Path to the SVG icon used in the button.
-  final String iconPath;
+  /// An optional icon widget to display before the title.
+  final Widget? icon;
 
-  const MenuButton({
+  /// Creates a primary button widget.
+  const PrimaryButton({
     super.key,
-    required this.options,
-    required this.onSelect,
-    required this.iconPath,
+    required this.title,
+    required this.onTap,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).primaryColor),
-        borderRadius: BorderRadius.circular(8),
+    final TextStyle? buttonTextStyle = Theme.of(context).textTheme.labelLarge;
+
+    return ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
-      child: PopupMenuButton<String>(
-        onSelected: onSelect,
-        itemBuilder: (BuildContext context) => options
-            .map((choice) => PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                ))
-            .toList(),
-        icon: SvgPicture.asset(
-          iconPath,
-          placeholderBuilder: (_) =>
-              const Icon(Icons.error_outline, color: Colors.red),
-        ),
-        color: Colors.white,
-        padding: EdgeInsets.zero,
-        offset: const Offset(0, 42), // Position dropdown below the button
-      ),
+      child:
+          icon ==
+              null // Conditionally render based on icon presence
+          ? Text(
+              title,
+              style: buttonTextStyle?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          : Row(
+              mainAxisSize:
+                  MainAxisSize.min, // To keep the row as small as possible
+              children: [
+                icon!,
+                const SizedBox(width: 8.0), // Spacing between icon and text
+                Text(
+                  title,
+                  style: buttonTextStyle?.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }
