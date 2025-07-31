@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 
-/// A customizable widget to display the status of a bill payment.
-/// This widget presents a status text within a container that features a
-/// colored border and background, both derived from the provided color parameters.
-/// The text is automatically converted to uppercase and styled with a bold font.
-/// This widget provides internal horizontal and vertical padding for its content
-/// and defines its width based on the content's size and parent constraints.
-
+/// A compact label widget to display the payment status of a bill.
+///
+/// Shows uppercase status text inside a container with custom
+/// background and border color. Commonly used for statuses like
+/// "PAID", "PENDING", or "FAILED".
 class PaymentStatus extends StatelessWidget {
-  /// The status string to be displayed (e.g., "Paid", "Pending", "Failed").
-  /// This text will be converted to uppercase.
+  /// Status label to display (e.g., "Paid", "Failed").
+  /// Rendered in uppercase.
   final String status;
 
-  /// The color used for the text and the border of the container.
+  /// Color for the border and text.
   final Color borderTextColor;
 
-  /// The background color of the status container.
+  /// Background color of the container.
   final Color backgroundColor;
 
-  /// Creates a BillPaymentStatus widget.
   const PaymentStatus({
     super.key,
     required this.status,
@@ -37,8 +34,11 @@ class PaymentStatus extends StatelessWidget {
       ),
       child: Text(
         status.toUpperCase(),
-        style: TextStyle(color: borderTextColor, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center, // Center the text within the container
+        style: TextStyle(
+          color: borderTextColor,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }
