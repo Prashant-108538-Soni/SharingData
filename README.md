@@ -1,42 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-/// A reusable widget to display an SVG icon inside a styled card container.
-///
-/// Typically used for showing biller or brand logos.
-/// Provides consistent padding, rounded corners, and error handling.
-class BillerImage extends StatelessWidget {
-  /// Path to the SVG asset to render.
-  final String svgPath;
+/// A customizable widget to display the status of a bill payment.
+/// This widget presents a status text within a container that features a
+/// colored border and background, both derived from the provided color parameters.
+/// The text is automatically converted to uppercase and styled with a bold font.
+/// This widget provides internal horizontal and vertical padding for its content
+/// and defines its width based on the content's size and parent constraints.
 
-  /// Size of the card (width and height). Defaults to 60.
-  final double size;
+class PaymentStatus extends StatelessWidget {
+  /// The status string to be displayed (e.g., "Paid", "Pending", "Failed").
+  /// This text will be converted to uppercase.
+  final String status;
 
-  const BillerImage({
+  /// The color used for the text and the border of the container.
+  final Color borderTextColor;
+
+  /// The background color of the status container.
+  final Color backgroundColor;
+
+  /// Creates a BillPaymentStatus widget.
+  const PaymentStatus({
     super.key,
-    required this.svgPath,
-    this.size = 60,
+    required this.status,
+    required this.borderTextColor,
+    required this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size,
-      height: size,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).primaryColor,
-          width: 1,
-        ),
+        color: backgroundColor,
+        border: Border.all(color: borderTextColor, width: 1.0),
+        borderRadius: BorderRadius.circular(8.0),
       ),
-      child: SvgPicture.asset(
-        svgPath,
-        fit: BoxFit.contain,
-        placeholderBuilder: (_) =>
-            const Icon(Icons.error_outline, color: Colors.red),
+      child: Text(
+        status.toUpperCase(),
+        style: TextStyle(color: borderTextColor, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center, // Center the text within the container
       ),
     );
   }
