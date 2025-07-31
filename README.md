@@ -7,25 +7,62 @@ import 'package:hdfc_flutter_widgets/event_card/common/event_execution_pill.dart
 import 'package:hdfc_flutter_widgets/event_card/common/primary_detail.dart';
 import 'package:hdfc_flutter_widgets/event_card/common/smart_pay_status.dart';
 
-/// A compact card to display event details like bill payment status,
-/// scheduled date, and smart pay status in a responsive layout.
+/// A reusable and responsive compact event card widget.
+/// Use this to show payment/event-related information in a summarized format.
 class CompactEventCard extends StatelessWidget {
-  // Required parameters for the event card.
+  /// List of menu options shown in the more options icon.
   final List<String> menuOptions;
-  final String eventIconPath;
-  final String billerImagePath;
-  final String smartPayStatus;
-  final double amount;
-  final String scheduledDate;
+
+  /// Callback when user taps 'View Details' button.
   final VoidCallback onTap;
+
+  /// Callback when a menu option is selected.
   final ValueChanged<String> onSelect;
+
+  /// Path to the event icon (usually an SVG).
+  final String eventIconPath;
+
+  /// Path to the biller logo/icon.
+  final String billerImagePath;
+
+  /// Label text for smart pay status (e.g. "Enabled", "Disabled").
+  final String smartPayStatusText;
+
+  /// Icon path for smart pay status.
   final String smartPayIconPath;
 
-  // Primary details
+  /// Total amount to be paid/shown.
+  final double amount;
+
+  /// Status string for the bill (e.g. "Paid", "Overdue").
+  final String billPaymentStatus;
+
+  /// Bill status text background color.
+  final Color billStatusBackgroundColor;
+
+  /// Bill status text color.
+  final Color billStatusTextColor;
+
+  /// Scheduled event date string (e.g. "17 Sept").
+  final String scheduledDate;
+
+  /// Scheduled event label (e.g. "SCHEDULED", "PAID").
+  final String scheduledLabel;
+
+  /// Event name to display.
   final String eventName;
+
+  /// Background color for event icon.
   final Color backgroundColor;
+
+  /// User account or masked account string.
   final String accountDetails;
+
+  /// Type of bill or service (e.g. "Electricity", "Mobile").
   final String billType;
+
+  /// Text for "View Details" button.
+  final String viewDetailsText;
 
   const CompactEventCard({
     Key? key,
@@ -34,17 +71,22 @@ class CompactEventCard extends StatelessWidget {
     required this.onSelect,
     required this.eventIconPath,
     required this.billerImagePath,
-    required this.smartPayStatus,
+    required this.smartPayStatusText,
+    required this.smartPayIconPath,
     required this.amount,
+    required this.billPaymentStatus,
+    required this.billStatusBackgroundColor,
+    required this.billStatusTextColor,
     required this.scheduledDate,
+    required this.scheduledLabel,
     required this.eventName,
     required this.backgroundColor,
     required this.accountDetails,
     required this.billType,
-    required this.smartPayIconPath,
+    this.viewDetailsText = "View Details",
   }) : super(key: key);
 
-  /// Common top container decoration
+  /// Top container decoration
   BoxDecoration _topContainerDecoration(BuildContext context) => BoxDecoration(
         color: Colors.lightBlue[50],
         border: Border.all(
@@ -57,7 +99,7 @@ class CompactEventCard extends StatelessWidget {
         ),
       );
 
-  /// Common bottom container decoration
+  /// Bottom container decoration
   BoxDecoration _bottomContainerDecoration(BuildContext context) => BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.only(
@@ -78,18 +120,17 @@ class CompactEventCard extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top section with event details and icons
+            // Top section: Event details and smart pay
             Container(
               decoration: _topContainerDecoration(context),
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Header Row: Primary details and biller image
+                  // Event details + Biller logo
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Event details
                       Expanded(
                         child: PrimaryDetail(
                           eventName: eventName,
@@ -99,18 +140,17 @@ class CompactEventCard extends StatelessWidget {
                           billType: billType,
                         ),
                       ),
-                      // Biller logo
                       BillerImage(svgPath: billerImagePath, size: 50),
                     ],
                   ),
                   const SizedBox(height: 10),
 
-                  /// SmartPay status
+                  // Smart Pay Status
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: SmartPayStatus(
                       svgPath: smartPayIconPath,
-                      text: smartPayStatus,
+                      text: smartPayStatusText,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -118,18 +158,16 @@ class CompactEventCard extends StatelessWidget {
               ),
             ),
 
-            // Bottom section with amount, date pill, and actions
+            // Bottom section: Payment info + actions
             Container(
               decoration: _bottomContainerDecoration(context),
               padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Row with amount + payment status and scheduled date
+                  // Amount + Bill status + Date pill
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Amount and bill status
                       Expanded(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -148,32 +186,29 @@ class CompactEventCard extends StatelessWidget {
                             const SizedBox(width: 10),
                             Flexible(
                               child: BillPaymentStatus(
-                                status: "Paid",
-                                borderTextColor: Colors.red,
-                                backgroundColor: Colors.red.shade50,
+                                status: billPaymentStatus,
+                                borderTextColor: billStatusTextColor,
+                                backgroundColor: billStatusBackgroundColor,
                               ),
                             ),
                           ],
                         ),
                       ),
-
-                      // Scheduled date pill
                       EventExecutionPill(
                         eventDate: scheduledDate,
-                        eventString: 'SCHEDULED',
+                        eventString: scheduledLabel,
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 10),
 
-                  /// Row with action button and menu
+                  // Bottom actions
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: SecondaryButton(
-                          title: "View Details",
+                          title: viewDetailsText,
                           onTap: onTap,
                         ),
                       ),
@@ -194,3 +229,26 @@ class CompactEventCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
+CompactEventCard(
+  menuOptions: ["Edit", "Delete"],
+  onTap: () => print("View Details tapped"),
+  onSelect: (option) => print("Selected: $option"),
+  eventIconPath: 'assets/icons/mobile.svg',
+  billerImagePath: 'assets/icons/jio.svg',
+  smartPayStatusText: "Enabled",
+  smartPayIconPath: 'assets/icons/auto_debit.svg',
+  amount: 459.00,
+  billPaymentStatus: "Paid",
+  billStatusTextColor: Colors.red,
+  billStatusBackgroundColor: Colors.red.shade50,
+  scheduledDate: "17 Sept",
+  scheduledLabel: "SCHEDULED",
+  eventName: "Mobile Recharge",
+  backgroundColor: Colors.blue,
+  accountDetails: "XXXX 9089",
+  billType: "Postpaid",
+)
