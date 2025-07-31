@@ -1,28 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hdfc_flutter_widgets/common/secondary_button.dart';
+import 'package:hdfc_flutter_widgets/common/tertiary_button.dart';
+import 'package:hdfc_flutter_widgets/event_card/common/bill_payment_status.dart';
+import 'package:hdfc_flutter_widgets/event_card/common/biller_image.dart';
+import 'package:hdfc_flutter_widgets/event_card/common/event_execution_pill.dart';
+import 'package:hdfc_flutter_widgets/event_card/common/primary_detail.dart';
+import 'package:hdfc_flutter_widgets/event_card/common/smart_pay_status.dart';
 
-/// A responsive bill card widget that displays bill details such as
-/// title, subtitle, amount, status, and action buttons.
-/// 
-/// This widget scales well across mobile, tablet, and web layouts.
-class BillCard extends StatelessWidget {
-  final String billTitle;
-  final String billId;
-  final String svgIconPath;
-  final String logoPath;
+class CompactEventCard extends StatelessWidget {
+  final List<String> menuOptions;
+  final String eventIconPath;
+  final String billerImagePath;
   final String smartPayStatus;
   final double amount;
   final String scheduledDate;
+  final VoidCallback onTap;
+  final ValueChanged<String> onSelect;
+  final String smartPayIconPath;
 
-  const BillCard({
+  // Primary details
+  final String eventName;
+  final Color backgroundColor;
+  final String accountDetails;
+  final String billType;
+
+  const CompactEventCard({
     Key? key,
-    required this.billTitle,
-    required this.billId,
-    required this.svgIconPath,
-    required this.logoPath,
+    required this.menuOptions,
+    required this.onTap,
+    required this.onSelect,
+    required this.eventIconPath,
+    required this.billerImagePath,
     required this.smartPayStatus,
     required this.amount,
     required this.scheduledDate,
+    required this.eventName,
+    required this.backgroundColor,
+    required this.accountDetails,
+    required this.billType,
+    required this.smartPayIconPath,
   }) : super(key: key);
 
   @override
@@ -30,167 +46,139 @@ class BillCard extends StatelessWidget {
     // Use LayoutBuilder for responsive sizing
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Card(
-          margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                /// Top Row: Left icon, Title + ID, Right Logo
-                Row(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.lightBlue[50],
+                border: Border.all(
+                  color: Theme.of(context).primaryColor, // Set the border color here
+                  width: 1.0, // Set the border width here
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Left: SVG Icon
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: SvgPicture.asset(
-                        svgIconPath,
-                        width: 24,
-                        height: 24,
-                        placeholderBuilder: (context) => const CircularProgressIndicator(strokeWidth: 1),
-                        onPictureError: (error, stackTrace) => const Icon(Icons.error),
-                      ),
+                    /// Top Row: Left icon, Title + ID, Right Logo
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Left: SVG Icon
+                        Flexible(
+                          child: PrimaryDetail(
+                            eventName: eventName,
+                            svgPath: eventIconPath,
+                            backgroundColor: backgroundColor,
+                            accountDetails: accountDetails,
+                            billType: billType,
+                          ),
+                        ),
+                        BillerImage(svgPath: billerImagePath, size: 50),
+                      ],
                     ),
-
-                    const SizedBox(width: 12),
-
-                    // Middle: Title and Subtitle
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            billTitle,
-                            style: Theme.of(context).textTheme.titleMedium,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            billId,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          // SmartPay Set Indicator
-                          Row(
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SmartPayStatus(svgPath: smartPayIconPath, text: smartPayStatus),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                border: Border(
+                  left: BorderSide(color: Theme.of(context).primaryColor, width: 1),
+                  right: BorderSide(color: Theme.of(context).primaryColor, width: 1),
+                  bottom: BorderSide(color: Theme.of(context).primaryColor, width: 1),
+                  // No 'top' BorderSide is specified, so no top border will be rendered.
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      // Align items along the main axis (horizontal)
+                      // spaceBetween puts the first item(s) at the start and the last item(s) at the end,
+                      // distributing the remaining space between them.
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Group the Amount and BillPaymentStatus together on the left
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.check_circle, color: Colors.green, size: 16),
-                              const SizedBox(width: 6),
-                              Text(
-                                smartPayStatus,
-                                style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
+                              // Amount
+                              Flexible(
+                                child: Text(
+                                  '₹ ${amount.toStringAsFixed(2)}',
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Flexible(
+                                child: BillPaymentStatus(
+                                  status: "Paid",
+                                  borderTextColor: Colors.red,
+                                  backgroundColor: Colors.red.shade50,
+                                ),
                               ),
                             ],
-                          )
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // Right: Logo (e.g., Airtel)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        color: Colors.white,
-                        child: SvgPicture.asset(
-                          logoPath,
-                          fit: BoxFit.contain,
-                          placeholderBuilder: (context) => const Icon(Icons.error),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                /// Middle: Amount + Scheduled Date
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Amount
-                    Text(
-                      '₹ ${amount.toStringAsFixed(2)}',
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-
-                    // Scheduled date pill
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.orange),
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.orange.shade50,
-                      ),
-                      child: Text(
-                        'SCHEDULED: $scheduledDate',
-                        style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.w500, fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                /// Bottom: View Details + 3-dot icon
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // View Details Button
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.blue),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: const Text(
-                          'View Details',
-                          style: TextStyle(color: Colors.blue),
+                        // Scheduled date pill
+                        Flexible(
+                          child: EventExecutionPill(eventDate: '17 Sept', eventString: 'SCHEDULED'),
                         ),
-                      ),
+                      ],
                     ),
 
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
 
-                    // More Options Icon
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.more_vert, size: 20),
-                    )
+                    /// Bottom: View Details + 3-dot icon
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // View Details Button
+                        Expanded(
+                          child: SecondaryButton(title: "View Details", onTap: onTap),
+                        ),
+                        const SizedBox(width: 10),
+                        // More Options Icon
+                        TertiaryButton(
+                          options: menuOptions,
+                          onSelect: onSelect,
+                          icon: Icon(Icons.more_vert),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );
   }
 }
-
-
-Behind the Scenes and Ahead: Quarterly All Hands- Q1 2025
-Wednesday, Jul 30  •  4:00 – 5:00 PM
-Google Meet joining info
-Video call link: https://meet.google.com/bud-ptcx-qbm
-Or dial: +1 929-282-2119 PIN: 889 345 651#
-More phone numbers: https://tel.meet/bud-ptcx-qbm?pin=5286788557322
