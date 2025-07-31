@@ -1,122 +1,92 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+class ScrollableChipHeader extends StatefulWidget {
+  final List<String> chipLabels;
 
-class MyApp extends StatelessWidget {
+  const ScrollableChipHeader({super.key, required this.chipLabels});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sticky Date Cards',
-      debugShowCheckedModeBanner: false,
-      home: StickyDateCardScreen(),
-    );
-  }
+  State<ScrollableChipHeader> createState() => _ScrollableChipHeaderState();
 }
 
-class StickyDateCardScreen extends StatelessWidget {
-  final Map<String, List<String>> data = {
-    '04 October': [
-      'Mom’s Phone Bill',
-      'Personal Loan',
-      'Infinia Credit Card',
-      'Electricity Bill',
-      'Netflix Subscription',
-    ],
-    '05 October': [
-      'Credit Card EMI',
-      'Grocery Payment',
-      'Amazon Order',
-      'Phone Recharge',
-      'School Fees',
-      'Health Insurance',
-    ],
-    '08 October': [
-      'Mom’s Phone Bill',
-    ],
-  };
+class _ScrollableChipHeaderState extends State<ScrollableChipHeader> {
+  final ScrollController _controller = ScrollController();
+  bool _showLeft = false;
+  bool _showRight = false;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sticky Date Card List'),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: CustomScrollView(
-        slivers: data.entries.map((entry) {
-          return SliverStickyDateSection(date: entry.key, items: entry.value);
-        }).toList(),
-      ),
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkScrollButtons());
+    _controller.addListener(_checkScrollButtons);
+  }
+
+  void _checkScrollButtons() {
+    setState(() {
+      _showLeft = _controller.offset > 0;
+      _showRight = _controller.offset < _controller.position.maxScrollExtent;
+    });
+  }
+
+  void _scroll(double offset) {
+    _controller.animateTo(
+      _controller.offset + offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
-}
 
-class SliverStickyDateSection extends StatelessWidget {
-  final String date;
-  final List<String> items;
-
-  const SliverStickyDateSection({required this.date, required this.items});
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildListDelegate.fixed(
-        [
-          StickyHeader(date: date),
-          ...items.map((item) => PaymentCard(title: item)).toList(),
+    return SizedBox(
+      height: 50,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: ListView.separated(
+              controller: _controller,
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.chipLabels.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) => Chip(
+                label: Text(widget.chipLabels[index]),
+                backgroundColor: Colors.grey[200],
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+            ),
+          ),
+          if (_showLeft)
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () => _scroll(-100),
+                ),
+              ),
+            ),
+          if (_showRight)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios),
+                  onPressed: () => _scroll(100),
+                ),
+              ),
+            ),
         ],
-      ),
-    );
-  }
-}
-
-class StickyHeader extends StatelessWidget {
-  final String date;
-
-  const StickyHeader({required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[200],
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        date,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.deepPurple,
-        ),
-      ),
-    );
-  }
-}
-
-class PaymentCard extends StatelessWidget {
-  final String title;
-
-  const PaymentCard({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(16),
-          title: Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text('Details for $title'),
-          trailing: ElevatedButton(
-            onPressed: () {},
-            child: Text('View'),
-          ),
-        ),
       ),
     );
   }
