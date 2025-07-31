@@ -1,45 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hdfc_flutter_widgets/event_card/common/description.dart';
 
-/// A compact label widget to display the payment status of a bill.
+/// A reusable widget that displays a primary detail row consisting of:
+/// - A leading SVG icon inside a colored circular background
+/// - A title (main label)
+/// - A short description
+/// - A smart pay status widget that shows a status with an icon and text
 ///
-/// Shows uppercase status text inside a container with custom
-/// background and border color. Commonly used for statuses like
-/// "PAID", "PENDING", or "FAILED".
-class PaymentStatus extends StatelessWidget {
-  /// Status label to display (e.g., "Paid", "Failed").
-  /// Rendered in uppercase.
-  final String status;
+/// This widget is designed to be used in event or transaction cards
+/// where a quick summary of an item needs to be shown in a structured layout.
+class PrimaryDetail extends StatelessWidget {
+  /// Path to the leading SVG asset (e.g., "assets/icons/phone_bill.svg")
+  final String prefixIconPath;
 
-  /// Color for the border and text.
-  final Color borderTextColor;
+  /// Background color of the circular container that wraps the icon
+  final Color prefixIconBackgroundColor;
 
-  /// Background color of the container.
-  final Color backgroundColor;
+  /// The main title or event name to be shown (e.g., "Mom's Phone Bill")
+  final String title;
 
-  const PaymentStatus({
+  /// The subtitle or additional supporting text (currently unused in the UI)
+  final String subtitle;
+
+  /// Description text shown below the title
+  final String descriptionText;
+
+  /// Path to the SVG asset used inside SmartPayStatus widget
+  final String descriptionIconPath;
+
+  const PrimaryDetail({
     super.key,
-    required this.status,
-    required this.borderTextColor,
-    required this.backgroundColor,
+    required this.title,
+    required this.prefixIconPath,
+    required this.prefixIconBackgroundColor,
+    required this.descriptionIconPath,
+    required this.descriptionText,
+    required this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border.all(color: borderTextColor, width: 1.0),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Text(
-        status.toUpperCase(),
-        style: TextStyle(
-          color: borderTextColor,
-          fontWeight: FontWeight.bold,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Leading circular icon
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: prefixIconBackgroundColor),
+          alignment: Alignment.center,
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: SvgPicture.asset(
+              prefixIconPath,
+              // Fallback icon if asset fails to load
+              placeholderBuilder: (BuildContext context) =>
+                  const Icon(Icons.error_outline, color: Colors.red),
+            ),
+          ),
         ),
-        textAlign: TextAlign.center,
-      ),
+
+        const SizedBox(width: 12),
+
+        // Title, description, and status section
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Title text
+              Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87),
+                // overflow: TextOverflow.ellipsis,
+                // maxLines: 2,
+              ),
+
+              const SizedBox(height: 4),
+
+              // Description text
+              Text(
+                subtitle,
+                style: TextStyle(color: Colors.grey.shade800),
+                // overflow: TextOverflow.ellipsis,
+                // maxLines: 2,
+              ),
+
+              const SizedBox(height: 20),
+
+              // Status row (icon + label)
+              Description(svgPath: descriptionIconPath, text: descriptionText),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
