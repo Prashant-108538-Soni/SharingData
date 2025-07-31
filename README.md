@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// A reusable widget that displays an SVG icon inside a rounded card.
-/// Shows an error fallback if the SVG fails to load.
+/// A reusable widget to display an SVG icon inside a styled card container.
+///
+/// Typically used for showing biller or brand logos.
+/// Provides consistent padding, rounded corners, and error handling.
 class BillerImage extends StatelessWidget {
-  /// Path to the SVG asset.
+  /// Path to the SVG asset to render.
   final String svgPath;
 
-  /// Optional size of the card. Defaults to 60x60.
+  /// Size of the card (width and height). Defaults to 60.
   final double size;
 
   const BillerImage({
@@ -33,9 +35,8 @@ class BillerImage extends StatelessWidget {
       child: SvgPicture.asset(
         svgPath,
         fit: BoxFit.contain,
-        // Add placeholderBuilder for error handling
-        placeholderBuilder: (BuildContext context) =>
-        const Icon(Icons.error_outline, color: Colors.red),
+        placeholderBuilder: (_) =>
+            const Icon(Icons.error_outline, color: Colors.red),
       ),
     );
   }
