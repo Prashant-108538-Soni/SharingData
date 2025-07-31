@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 
-/// A customizable primary button widget following the application's theme.
-/// This widget provides a reusable button component with a distinct primary
-/// style. It automatically adapts to the current theme's primary color
-/// and text color, ensuring a consistent look and feel throughout the application.
-/// The button takes a [title] string for its text label and an [onTap] callback
-/// function to define its behavior when pressed.
-/// An optional [icon] widget can be provided to display an icon before the title.
+/// A reusable primary button styled according to the app's theme.
+///
+/// Displays a filled button using the theme’s `colorScheme.primary` color.
+/// Optionally supports an icon placed before the label text.
+/// Commonly used for high-emphasis actions across the app.
 class PrimaryButton extends StatelessWidget {
-  /// The text displayed on the button.
+  /// Text label displayed inside the button.
   final String title;
 
-  /// The callback function that is executed when the button is pressed.
+  /// Callback executed when the button is pressed.
   final VoidCallback onTap;
 
-  /// An optional icon widget to display before the title.
+  /// Optional icon displayed before the text.
   final Widget? icon;
 
-  /// Creates a primary button widget.
   const PrimaryButton({
     super.key,
     required this.title,
@@ -36,9 +33,7 @@ class PrimaryButton extends StatelessWidget {
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
-      child:
-          icon ==
-              null // Conditionally render based on icon presence
+      child: icon == null
           ? Text(
               title,
               style: buttonTextStyle?.copyWith(
@@ -47,11 +42,10 @@ class PrimaryButton extends StatelessWidget {
               ),
             )
           : Row(
-              mainAxisSize:
-                  MainAxisSize.min, // To keep the row as small as possible
+              mainAxisSize: MainAxisSize.min,
               children: [
                 icon!,
-                const SizedBox(width: 8.0), // Spacing between icon and text
+                const SizedBox(width: 8.0),
                 Text(
                   title,
                   style: buttonTextStyle?.copyWith(
