@@ -1,1 +1,15 @@
-https://us02web.zoom.us/w/83180209726?tk=uBLj0meuPxIKRqdlNiyhOUviW4vgUk5gRRlBU1AEL20.DQgAAAATXe1GPhYycUZQeDZpY1NPR2Z4Yzg0eUNPUEVnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&pwd=DcIBcpM2KPMkYFia43DYMn33JvRGzK.1
+Hi Ajinkya,
+
+I would like to inform you about my upcoming leave and work-from-home schedule for December:
+
+1st – 5th December: Leave
+8th – 19th December: Work from Home
+22nd – 24th December: Leave
+
+Requesting your confirmation so that I can update our client (HDFC manager) accordingly and also apply the same in the portal.
+
+Thanks & Regards,
+
+Prashant Soni 
+8862999586
+Software engineer 
